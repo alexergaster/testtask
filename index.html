@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creation of leads</title>
+</head>
+<body>
+    <form action="./process/processLead.php" method="POST">
+        <label for="firstname">
+            Введіть ім'я:
+            <input type="text" id="firstname" name="firstname" required>
+        </label>
+        <label for="lastname">
+            Введіть прізвище:
+            <input type="text" id="lastname" name="lastname" required>
+        </label>
+        <label for="phone">
+            Введіть номер телефону
+            <input type="text" id="phone" name="phone" required>
+        </label>
+        <label for="email">
+            Введіть електронну адрессу:
+            <input type="text" id="email" name="email" required>
+        </label>
+        <button>Відправити</button>
+    </form>
+</body>
+</html>
