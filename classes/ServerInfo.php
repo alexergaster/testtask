@@ -10,7 +10,7 @@ class ServerInfo
     {
         return $_SERVER['REMOTE_ADDR'];
     }
-    public static function checkMethodPost() : bool
+    public static function isPostMethod() : bool
     {
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }

@@ -15,12 +15,10 @@ class Lead extends ServerInfo
     private string $ip;
     private string $password;
     private string $language;
-    private string $apiUrl;
     private string $token;
 
-    public function __construct(string $apiUrl, string $token)
+    public function __construct(string $token)
     {
-        $this->apiUrl = $apiUrl;
         $this->token = $token;
         $this->countryCode = 'GB';
         $this->box_id = 28;
@@ -88,12 +86,54 @@ class Lead extends ServerInfo
             ]
         ];
         $context = stream_context_create($options);
-        $result = file_get_contents($this->apiUrl, false, $context);
+        $result = file_get_contents("https://crm.belmar.pro/api/v1/addlead", false, $context);
 
         if($result === false){
             die("Помилка при надсиланні даних :(");
         }
 
         return $result;
+    }
+    public function getStatuses($date_from, $date_to, $page = 0, $limit = 100) {
+        $data = array(
+            'date_from' => $date_from . " 00:00:00",
+            'date_to' => $date_to . " 23:59:59",
+            'page' => $page,
+            'limit' => $limit
+        );
+
+        $result = $this->postData($data);
+        $response = json_decode($result, true);
+
+        if ($response && isset($response['status']) && $response['status'] === true) {
+            return $response['data'];
+        } else {
+            return array();
+        }
+    }
+
+    private function postData($data): false|string
+    {
+        $options = array(
+            'http' => array(
+                'header' => "Content-Type: application/json\r\n" .
+                    "token: {$this->token}\r\n",
+                'method' => 'POST',
+                'content' => json_encode($data),
+            ),
+        );
+        $context = stream_context_create($options);
+        return file_get_contents("https://crm.belmar.pro/api/v1/getstatuses", false, $context);
+    }
+
+    public function printLead($leads): string
+    {
+        $str = '';
+        foreach ($leads as $lead){
+           $str .= "<tr>" . "<td class='p-2'>{$lead['id']}</td>" . "<td class='p-2'>{$lead['email']}</td>" .
+            "<td class='p-2'>{$lead['status']}</td>" . "<td class='p-2'>{$lead['ftd']}</td>". "</tr>";
+        }
+
+      return $str;
     }
 }
